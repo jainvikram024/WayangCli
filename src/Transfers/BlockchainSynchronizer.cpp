@@ -455,6 +455,8 @@ BlockchainSynchronizer::UpdateConsumersResult BlockchainSynchronizer::updateCons
 
     if (result.hasNewBlocks) {
       uint32_t startOffset = result.newBlockHeight - interval.startHeight;
+    if (result.newBlockHeight == 0)
+      startOffset = 0
       // update consumer
       if (kv.first->onNewBlocks(blocks.data() + startOffset, result.newBlockHeight, static_cast<uint32_t>(blocks.size()) - startOffset)) {
         // update state if consumer succeeded
