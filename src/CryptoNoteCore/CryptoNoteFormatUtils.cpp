@@ -485,9 +485,10 @@ bool get_block_longhash(cn_context &context, const Block& b, Hash& res) {
   if (!get_block_hashing_blob(b, bd)) {
     return false;
   }
-
+  } else if (b.majorVersion >= BLOCK_MAJOR_VERSION_2) {
   cn_slow_hash(context, bd.data(), bd.size(), res);
   return true;
+  }
 }
 
 std::vector<uint32_t> relative_output_offsets_to_absolute(const std::vector<uint32_t>& off) {

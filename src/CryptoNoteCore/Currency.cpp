@@ -87,7 +87,8 @@ bool Currency::init() {
   }
 
   if (isTestnet()) {
-    m_upgradeHeight = 0;
+    m_upgradeHeightV2 = 0;
+    m_upgradeHeightV3 = static_cast<uint64_t>(-1);
     m_blocksFileName = "testnet_" + m_blocksFileName;
     m_blocksCacheFileName = "testnet_" + m_blocksCacheFileName;
     m_blockIndexesFileName = "testnet_" + m_blockIndexesFileName;
@@ -139,8 +140,28 @@ uint64_t Currency::baseRewardFunction(uint64_t alreadyGeneratedCoins, uint32_t h
   return base_reward;
 }
 
-bool Currency::getBlockReward(size_t medianSize, size_t currentBlockSize, uint64_t alreadyGeneratedCoins,
-  uint64_t fee, uint32_t height, uint64_t& reward, int64_t& emissionChange) const {
+size_t Currency::blockGrantedFullRewardZoneByBlockVersion(uint8_t blockMajorVersion) const {
+  if (blockMajorVersion >= BLOCK_MAJOR_VERSION_3) {
+    return m_blockGrantedFullRewardZone;
+  } else if (blockMajorVersion == BLOCK_MAJOR_VERSION_2) {
+    return m_blockGrantedFullRewardZoneV2;
+  } else {
+    return m_blockGrantedFullRewardZoneV1;
+  }
+}
+
+uint64_t Currency::upgradeHeight(uint8_t majorVersion) const {
+  if (majorVersion == BLOCK_MAJOR_VERSION_2) {
+    return m_upgradeHeightV2;
+  } else if (majorVersion == BLOCK_MAJOR_VERSION_3) {
+    return m_upgradeHeightV3;
+  } else {
+    return static_cast<uint64_t>(-1);
+  }
+}
+
+bool Currency::getBlockReward(uint8_t blockMajorVersion, size_t medianSize, size_t currentBlockSize, uint64_t alreadyGeneratedCoins,
+  uint64_t fee, uint64_t& reward, int64_t& emissionChange) const {
   assert(alreadyGeneratedCoins <= m_moneySupply);
 
   uint64_t baseReward = baseRewardFunction(alreadyGeneratedCoins, height);
@@ -152,7 +173,7 @@ bool Currency::getBlockReward(size_t medianSize, size_t currentBlockSize, uint64
   }
 
   uint64_t penalizedBaseReward = getPenalizedAmount(baseReward, medianSize, currentBlockSize);
-
+  uint64_t penalizedFee = blockMajorVersion >= BLOCK_MAJOR_VERSION_2 ? getPenalizedAmount(fee, medianSize, currentBlockSize) : fee;
   emissionChange = penalizedBaseReward;
   reward = penalizedBaseReward + fee;
 
@@ -269,9 +290,9 @@ size_t Currency::maxBlockCumulativeSize(uint64_t height) const {
   return maxSize;
 }
 
-bool Currency::constructMinerTx(uint32_t height, size_t medianSize, uint64_t alreadyGeneratedCoins, size_t currentBlockSize,
-  uint64_t fee, const AccountPublicAddress& minerAddress, Transaction& tx,
-  const BinaryArray& extraNonce/* = BinaryArray()*/, size_t maxOuts/* = 1*/) const {
+bool Currency::constructMinerTx(uint8_t blockMajorVersion, uint32_t height, size_t medianSize, uint64_t alreadyGeneratedCoins, size_t currentBlockSize,
+  uint64_t fee, const AccountPublicAddress& minerAddress, Transaction& tx, const BinaryArray& extraNonce/* = BinaryArray()*/, size_t maxOuts/* = 1*/) const {
+
   tx.inputs.clear();
   tx.outputs.clear();
   tx.extra.clear();
@@ -289,7 +310,7 @@ bool Currency::constructMinerTx(uint32_t height, size_t medianSize, uint64_t alr
 
   uint64_t blockReward;
   int64_t emissionChange;
-  if (!getBlockReward(medianSize, currentBlockSize, alreadyGeneratedCoins, fee, height, blockReward, emissionChange)) {
+  if (!getBlockReward(blockMajorVersion, medianSize, currentBlockSize, alreadyGeneratedCoins, fee, blockReward, emissionChange)) {
     logger(INFO) << "Block is too big";
     return false;
   }
@@ -618,7 +639,8 @@ CurrencyBuilder::CurrencyBuilder(Logging::ILogger& log) : m_currency(log) {
   mempoolTxFromAltBlockLiveTime(parameters::CRYPTONOTE_MEMPOOL_TX_FROM_ALT_BLOCK_LIVETIME);
   numberOfPeriodsToForgetTxDeletedFromPool(parameters::CRYPTONOTE_NUMBER_OF_PERIODS_TO_FORGET_TX_DELETED_FROM_POOL);
 
-  upgradeHeight(parameters::UPGRADE_HEIGHT);
+  upgradeHeightV2(parameters::UPGRADE_HEIGHT_V2);
+  upgradeHeightV3(parameters::UPGRADE_HEIGHT_V3);
   upgradeVotingThreshold(parameters::UPGRADE_VOTING_THRESHOLD);
   upgradeVotingWindow(parameters::UPGRADE_VOTING_WINDOW);
   upgradeWindow(parameters::UPGRADE_WINDOW);
@@ -639,7 +661,7 @@ CurrencyBuilder::CurrencyBuilder(Logging::ILogger& log) : m_currency(log) {
 Transaction CurrencyBuilder::generateGenesisTransaction() {
   CryptoNote::Transaction tx;
   CryptoNote::AccountPublicAddress ac = boost::value_initialized<CryptoNote::AccountPublicAddress>();
-  m_currency.constructMinerTx(0, 0, 0, 0, 0, ac, tx); // zero fee in genesis
+  m_currency.constructMinerTx(1, 0, 0, 0, 0, 0, ac, tx); // zero fee in genesis
 
   return tx;
 }
