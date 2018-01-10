@@ -109,9 +109,9 @@ const uint64_t MAX_BLOCK_REWARD                              = (UINT64_C(2) * pa
 const uint64_t REWARD_INCREASE_INTERVAL                      = (UINT64_C(2640));
 
 const char     CRYPTONOTE_NAME[]                             = "Vedacoin";
-const char     GENESIS_COINBASE_TX_HEX[]                     = "";
-const uint32_t GENESIS_NONCE                                 = ;
-const uint64_t GENESIS_TIMESTAMP                             = ;
+const char     GENESIS_COINBASE_TX_HEX[]                     = "010a01ff0001904e029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd088071210151186407375a6a0e44f61235fff7653efa7c7a7e335cc604d99072ba003d5115";
+const uint64_t     GENESIS_TIMESTAMP			     = 0;
+const uint32_t     GENESIS_NONCE				     = 0;
 
 const uint8_t  TRANSACTION_VERSION_1                         =  1;
 const uint8_t  TRANSACTION_VERSION_2                         =  2;
@@ -143,6 +143,8 @@ const size_t   P2P_DEFAULT_HANDSHAKE_INVOKE_TIMEOUT          = 5000;          //
 const char     P2P_STAT_TRUSTED_PUB_KEY[]                    = "0000000000000000000000000000000000000000000000000000000000000000";
 
 const std::initializer_list<const char*> SEED_NODES = {
+"13.126.240.168:8057",
+"13.127.121.214"
  //  "180.214.232.89:8057",
    //"23.89.193.220:80",
    //"18.217.154.125:80"
