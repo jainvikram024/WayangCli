@@ -1,0 +1,15 @@
+2018-Jan-17 15:29:36.477662 INFO [simplewallet] vedacoin wallet v1.1.1.1()
+2018-Jan-17 15:29:46.662722 INFO [simplewallet] Generated new wallet: BL3TcU4ufq857PaAkepEWBbjcUpo16gqXT4ecW9oBYM23SQSL4bePKvJCJzwmvzMsR3QWfVVB7pkLFiPSPViRDjySAbpxjG
+2018-Jan-17 15:29:46.662722 INFO [simplewallet] view key: a08d8b4d3d5e935bc020c6f75fc19679e2180de5f32e00a88c9a17c118befa02
+2018-Jan-17 15:29:46.662953 INFO [simplewallet] **********************************************************************
+Your wallet has been generated.
+Use "help" command to see the list of available commands.
+Always use "exit" command when closing simplewallet to save
+current session's state. Otherwise, you will possibly need to synchronize 
+your wallet again. Your wallet key is NOT under risk anyway.
+**********************************************************************
+2018-Jan-17 15:30:01.650000 INFO [simplewallet] Height 1, transaction 60008930f0a54e73e25e8b8475ea229232048146dcdff1253451004a0c3a5bb5, received 351843.04979968
+2018-Jan-17 15:30:01.650180 INFO [simplewallet] Height 2, transaction acbbb963f2bee92cc80f9d5faa160617e9e64ac63865b4394e038699af00039e, received 351842.37871232
+2018-Jan-17 15:30:06.651416 INFO [simplewallet] Height 3, transaction 7f2361066b2535fafb36b19756af8287e35fd4347d5520381d31c1658bfe53c7, received 351841.70762623
+2018-Jan-17 15:32:56.758502 INFO [simplewallet] Height 4, transaction 8d6b0c50338d271e6abddc36829ebd8ed94545ed921a486accedbec0908b2ed3, received 351841.03654143
+2018-Jan-17 15:34:11.794521 ERROR [simplewallet] Error: wallet failed to connect to daemon (http://localhost:18236).

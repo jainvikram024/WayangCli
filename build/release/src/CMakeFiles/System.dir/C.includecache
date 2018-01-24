@@ -1,0 +1,18 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/brianwentzloff/Dropbox/projects/vedacoin/vedacoin/src/Platform/OSX/System/Context.c
+string.h
+-
+Context.h
+/Users/brianwentzloff/Dropbox/projects/vedacoin/vedacoin/src/Platform/OSX/System/Context.h
+
+/Users/brianwentzloff/Dropbox/projects/vedacoin/vedacoin/src/Platform/OSX/System/Context.h
+stdlib.h
+-
+
